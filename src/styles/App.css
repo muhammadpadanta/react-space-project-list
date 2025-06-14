@@ -241,6 +241,15 @@ svg {
     transition: stroke 0.3s, stroke-opacity 0.3s, stroke-width 0.3s;
 }
 
+.node {
+    cursor: pointer;
+}
+
+.node-wiggle-group {
+    transform-origin: center;
+    animation: nodeWiggle 10s ease-in-out infinite;
+}
+
 .node circle {
     stroke: var(--glow-color);
     stroke-width: 2px;
@@ -499,4 +508,99 @@ svg {
         font-size: 18px;
         padding: 10px;
     }
+}
+
+.welcome-modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(40, 40, 40, 0.5);
+    backdrop-filter: blur(8px);
+    z-index: 500;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    animation: fadeIn 0.5s forwards;
+}
+
+.welcome-modal-content {
+    background-color: var(--background-med);
+    border: 2px solid var(--glow-color);
+    box-shadow: 0 0 25px var(--pulse-glow), inset 0 0 15px var(--pulse-glow);
+    border-radius: 8px;
+    padding: 30px 40px;
+    width: 90%;
+    max-width: 550px;
+    text-align: center;
+    opacity: 0;
+    transform: scale(0.95);
+    animation: fadeInScale 0.5s 0.2s forwards;
+}
+
+@keyframes fadeIn {
+    to { opacity: 1; }
+}
+
+@keyframes fadeInScale {
+    to { opacity: 1; transform: scale(1); }
+}
+
+.welcome-modal-content h2 {
+    font-size: 38px;
+    color: var(--glow-color);
+    margin: 0 0 15px 0;
+    letter-spacing: 2px;
+}
+
+.welcome-modal-content p {
+    font-family: 'Source Code Pro', monospace;
+    font-size: 16px;
+    line-height: 1.7;
+    color: var(--text-secondary);
+    margin-bottom: 30px;
+}
+
+.welcome-modal-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+}
+
+.welcome-modal-buttons button {
+    background-color: transparent;
+    border: 1px solid var(--glow-color);
+    color: var(--glow-color);
+    padding: 12px 25px;
+    text-decoration: none;
+    border-radius: 4px;
+    font-family: 'Teko', sans-serif;
+    font-size: 20px;
+    letter-spacing: 1px;
+    cursor: pointer;
+    transition: background-color 0.2s, color 0.2s;
+}
+
+.welcome-modal-buttons button:hover {
+    background-color: var(--glow-color);
+    color: var(--background-dark);
+}
+
+.welcome-modal-buttons button.secondary {
+    border-color: var(--border-color);
+    color: var(--text-secondary);
+}
+.welcome-modal-buttons button.secondary:hover {
+    background-color: var(--border-color);
+    color: var(--text-primary);
+}
+
+@keyframes nodeWiggle {
+    0% { transform: translate(0, 0); }
+    25% { transform: translate(4px, 2px); }
+    50% { transform: translate(2px, -3px); }
+    75% { transform: translate(-3px, 4px); }
+    100% { transform: translate(0, 0); }
 }

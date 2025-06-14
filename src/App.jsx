@@ -1,5 +1,5 @@
 
-import React, { useState, useEffect, Fragment } from 'react';
+import React, { useState, useEffect, Fragment, useRef } from 'react';
 
 import { graphData } from './data/graphData';
 
@@ -12,6 +12,7 @@ import ExplorationProgress from './components/ExplorationProgress';
 import PlayerStatus from './components/PlayerStatus';
 import InfoPanel from './components/InfoPanel';
 import D3Graph from './components/D3Graph';
+import WelcomeModal from './components/WelcomeModal';
 
 function App() {
     const [isBooting, setIsBooting] = useState(true);
@@ -21,13 +22,32 @@ function App() {
     const [selectedNode, setSelectedNode] = useState(null);
     const [isPanelOpen, setIsPanelOpen] = useState(false);
     const [visitedNodes, setVisitedNodes] = useState(new Set());
+    const [isWelcomeModalOpen, setIsWelcomeModalOpen] = useState(false);
+    const audioRef = useRef(null);
+    const [hasSeenWelcome, setHasSeenWelcome] = useState(false);
+
 
     const handleBootAnimationStart = () => {
         setIsLoading(false);
+        if (!hasSeenWelcome) {
+            setIsWelcomeModalOpen(true);
+        }
     };
 
     const handleBootComplete = () => {
         setIsBooting(false);
+    };
+
+    const handleWelcomeModalClose = (shouldPlayMusic) => {
+        setIsWelcomeModalOpen(false);
+        setHasSeenWelcome(true);
+
+        if (shouldPlayMusic && audioRef.current) {
+            audioRef.current.volume = 0.3;
+            audioRef.current.play().catch(error => {
+                console.error("Audio playback failed:", error);
+            });
+        }
     };
 
     const handleNodeClick = (node, event) => {
@@ -53,9 +73,7 @@ function App() {
 
     useEffect(() => {
         const handleEscKey = (e) => {
-            if (e.key === "Escape") {
-                resetView();
-            }
+            if (e.key === "Escape") resetView();
         };
         const handleClickOutside = (event) => {
             if (isPanelOpen && !event.target.closest('.info-panel') && !event.target.closest('.node')) {
@@ -72,11 +90,13 @@ function App() {
 
     return (
         <Fragment>
+            <audio ref={audioRef} src="/music/space_song.mp3" loop />
+            <WelcomeModal isOpen={isWelcomeModalOpen} onClose={handleWelcomeModalClose} />
             {isBooting && <BootScreen onAnimationStart={handleBootAnimationStart} onBootComplete={handleBootComplete} />}
             <StarryBackground />
             <ExplorationProgress visitedCount={visitedNodes.size} totalCount={graphData.nodes.length} />
             <PlayerStatus />
-            <Hints isVisible={!isLoading} hasInteracted={hasInteracted} />
+            <Hints isVisible={!isLoading && !isWelcomeModalOpen} hasInteracted={hasInteracted} />
 
             <D3Graph
                 graphData={graphData}

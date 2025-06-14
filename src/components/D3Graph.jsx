@@ -35,10 +35,16 @@ const D3Graph = ({ graphData, onNodeClick, selectedNode, visitedNodes, onReady, 
                     .force("collide", d3.forceCollide().radius(d => d.radius + 15));
 
                 const link = graphContainer.append("g").selectAll("line").data(linksCopy).join("line").attr("class", "link");
+
                 const node = graphContainer.append("g").selectAll("g").data(nodesCopy).join("g").attr("class", "node");
 
-                node.append("circle").attr("r", d => d.radius).style("animation-delay", () => `${Math.random() * 4}s`);
-                node.append("text").text(d => d.label).attr("dy", "0.35em");
+                const wiggleGroup = node.append("g").attr("class", "node-wiggle-group");
+
+                wiggleGroup.style("animation-duration", () => `${Math.random() * 8 + 7}s`);
+                wiggleGroup.style("animation-delay", () => `${Math.random() * 5}s`);
+
+                wiggleGroup.append("circle").attr("r", d => d.radius).style("animation-delay", () => `${Math.random() * 4}s`); /* */
+                wiggleGroup.append("text").text(d => d.label).attr("dy", "0.35em"); /* */
 
                 simulation.on("tick", () => {
                     link.attr("x1", d => d.source.x).attr("y1", d => d.source.y).attr("x2", d => d.target.x).attr("y2", d => d.target.y);
