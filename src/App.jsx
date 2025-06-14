@@ -1,9 +1,8 @@
 
 import React, { useState, useEffect, Fragment, useRef } from 'react';
-
-import { graphData } from './data/graphData';
-
 import './styles/App.css';
+import { db } from './firebase';
+import { collection, getDocs } from 'firebase/firestore';
 
 import StarryBackground from './components/StarryBackground';
 import BootScreen from './components/BootScreen';
@@ -15,6 +14,7 @@ import D3Graph from './components/D3Graph';
 import WelcomeModal from './components/WelcomeModal';
 
 function App() {
+    const [graphData, setGraphData] = useState({ nodes: [], links: [] });
     const [isBooting, setIsBooting] = useState(true);
     const [isLoading, setIsLoading] = useState(true);
     const [isGraphReady, setIsGraphReady] = useState(false);
@@ -28,7 +28,6 @@ function App() {
 
 
     const handleBootAnimationStart = () => {
-        setIsLoading(false);
         if (!hasSeenWelcome) {
             setIsWelcomeModalOpen(true);
         }
@@ -72,6 +71,29 @@ function App() {
     };
 
     useEffect(() => {
+        const fetchGraphData = async () => {
+            setIsLoading(true);
+            try {
+                const querySnapshot = await getDocs(collection(db, "graph"));
+                if (!querySnapshot.empty) {
+                    // Assuming you have one document in the 'graph' collection
+                    const data = querySnapshot.docs[0].data();
+                    setGraphData({ nodes: data.nodes || [], links: data.links || [] });
+                } else {
+                    console.log("No such document!");
+                }
+            } catch (error) {
+                console.error("Error fetching graph data: ", error);
+            }
+            setIsLoading(false); // Set loading to false after fetching
+        };
+
+        fetchGraphData();
+    }, []);
+
+
+
+    useEffect(() => {
         const handleEscKey = (e) => {
             if (e.key === "Escape") resetView();
         };
@@ -98,14 +120,17 @@ function App() {
             <PlayerStatus />
             <Hints isVisible={!isLoading && !isWelcomeModalOpen} hasInteracted={hasInteracted} />
 
-            <D3Graph
-                graphData={graphData}
-                onNodeClick={handleNodeClick}
-                selectedNode={selectedNode}
-                visitedNodes={visitedNodes}
-                onReady={setIsGraphReady}
-                isGraphReady={isGraphReady}
-            />
+            {!isLoading && graphData.nodes.length > 0 && (
+                <D3Graph
+                    graphData={graphData}
+                    onNodeClick={handleNodeClick}
+                    selectedNode={selectedNode}
+                    visitedNodes={visitedNodes}
+                    onReady={setIsGraphReady}
+                    isGraphReady={isGraphReady}
+                />
+            )}
+
 
             <InfoPanel
                 node={selectedNode}
