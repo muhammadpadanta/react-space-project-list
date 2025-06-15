@@ -7,6 +7,7 @@ This is the source code for my project showcase website, built with **React**. I
 - Clean, modern UI built with React 
 - Fully responsive design
 - Project list with descriptions and links
+- Used The good ol' Gruvbox Dark as the Color scheme 👑
 
 ## 📸 Preview
 
