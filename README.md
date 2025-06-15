@@ -1,6 +1,6 @@
-# 🌐 Personal Portfolio & Project Showcase
+# 🌐 Project Showcase Website
 
-This is the source code for my personal website, built with **React**. It serves as both a digital portfolio and a project showcase platform. You're welcome to clone, modify, and use it for your own portfolio. Check out the live site: [Here](https://projects.muhammadpadanta.tech)
+This is the source code for my project showcase website, built with **React**. It serves as both a digital portfolio and a project showcase platform. You're welcome to clone, modify, and use it for your own portfolio. Check out the live site: [Here](https://projects.muhammadpadanta.tech)
 
 ## ✨ Features
 
